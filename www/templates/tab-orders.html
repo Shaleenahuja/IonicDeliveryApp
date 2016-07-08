@@ -1,0 +1,44 @@
+<ion-view view-title="Orders">
+  <ion-content><!--
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" href="#/tab/chats/{{chat.id}}">
+        <img ng-src="{{chat.face}}">
+        <h2>{{chat.name}}</h2>
+        <p>{{chat.lastText}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(chat)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>-->
+    <div class="card" ng-repeat="order in delivery">
+      <div class="item item-divider">
+        <ion-item ng-click="getDetails(order)">
+          <ul>
+            <li>orderName: {{order.user.first_name}} {{order.user.last_name}}</li>
+            <li>orderNumber: {{order.user.number}}</li>
+            <li>Address:  {{order.address.address_line1}}</li>
+            <li>Locality: {{order.address.locality}}</li>
+            <li>City:  {{order.address.city}}</li>
+            <li>PinCode:  {{order.address.pin_code}}</li>
+          </ul>
+        </ion-item>
+        <ion-item ng-if="order.status != 'delivered'">
+          <button class="button button-positive" ng-click="showPopup(order)">
+            Mark Deliver
+          </button>
+          <button class="button button-positive" ng-click="showDirections(order.address.locality, order.address.city)">
+            Start Route
+          </button>
+        </ion-item>
+        <ion-item ng-if="order.status == 'delivered'">
+          <button class="button button-danger">
+            Delivered
+          </button>
+        </ion-item>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>
