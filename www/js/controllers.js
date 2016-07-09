@@ -71,7 +71,19 @@ angular.module('starter.controllers', [])
   };
 
   $scope.showDirections = function(locality,city){
-    window.open('geo:lat,lon?q='+locality+','+city, '_system');
+    launchnavigator.isAppAvailable(launchnavigator.APP.GOOGLE_MAPS, function(isAvailable){
+      var app;
+      if(isAvailable){
+        app = launchnavigator.APP.GOOGLE_MAPS;
+      }else{
+        console.warn("Google Maps not available - falling back to user selection");
+        app = launchnavigator.APP.USER_SELECT;
+      }
+      launchnavigator.navigate("London, UK", {
+        app: app
+      });
+    });
+    //window.open('geo:lat,lon?q='+locality+','+city, '_system');
   };
   $scope.getDetails= function (data) {
     orderService.set(data);

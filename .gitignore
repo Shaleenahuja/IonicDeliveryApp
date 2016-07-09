@@ -5,3 +5,16 @@ node_modules/
 platforms/
 plugins/
 .idea
+.bowerrc
+.editorconfig
+.gitignore
+.idea/
+bower.json
+config.xml
+gulpfile.js
+hooks/
+ionic.project
+package.json
+resources/
+scss/
+www/
