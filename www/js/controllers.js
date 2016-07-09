@@ -8,10 +8,11 @@ angular.module('starter.controllers', [])
 .controller('LoginCtrl', function($rootScope, $scope, loginService, userService, $state, orderService, $http) {
   console.log("login");
   $scope.login = function(data){
+    alert(data);
       loginService.login(data).then(function(response){
       userService.set(response.data.data);
       $rootScope['authentication-token'] = response.data.data.authentication_token;
-        $http.get('http://127.0.0.1:5000/test/v1/orders/').then(function (response) {
+        $http.get('http://192.168.0.114:5000/test/v1/orders/').then(function (response) {
             orderService.setOrders(response.data.data);
           $state.go('orders');
           });
@@ -53,7 +54,7 @@ angular.module('starter.controllers', [])
               //don't allow the user to close unless he enters wifi password
               e.preventDefault();
             } else {
-              return $http.put("http://127.0.0.1:5000/test/v1/order/"+order.id+'/',$scope.data)
+              return $http.put("http://192.168.0.114:5000/test/v1/order/"+order.id+'/',$scope.data)
             }
           }
         }
