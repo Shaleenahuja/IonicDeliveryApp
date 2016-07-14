@@ -1,4 +1,4 @@
-var url = 'http://127.0.0.1:5000/';
+var url = 'http://192.168.0.214:5000/';
 angular.module('starter.controllers', [])
 
 .controller('TabCtrl', function ($scope, userService) {
