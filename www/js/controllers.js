@@ -1,18 +1,18 @@
+var url = 'http://127.0.0.1:5000/';
 angular.module('starter.controllers', [])
 
 .controller('TabCtrl', function ($scope, userService) {
-  console.log("tabCtrl");
   $scope.user = userService.get();
-  console.log($scope.user)
+
 })
 .controller('LoginCtrl', function($rootScope, $scope, loginService, userService, $state, orderService, $http) {
   console.log("login");
   $scope.login = function(data){
-    alert(data);
+
       loginService.login(data).then(function(response){
       userService.set(response.data.data);
       $rootScope['authentication-token'] = response.data.data.authentication_token;
-        $http.get('http://192.168.0.114:5000/test/v1/orders/').then(function (response) {
+        $http.get(url+'test/v1/orders/').then(function (response) {
             orderService.setOrders(response.data.data);
           $state.go('orders');
           });
@@ -54,7 +54,7 @@ angular.module('starter.controllers', [])
               //don't allow the user to close unless he enters wifi password
               e.preventDefault();
             } else {
-              return $http.put("http://192.168.0.114:5000/test/v1/order/"+order.id+'/',$scope.data)
+              return $http.put(url+"test/v1/order/"+order.id+'/',$scope.data)
             }
           }
         }
@@ -70,7 +70,7 @@ angular.module('starter.controllers', [])
     }, 30000);
   };
 
-  $scope.showDirections = function(locality,city){
+  $scope.showDirections = function(locality, city){
     launchnavigator.isAppAvailable(launchnavigator.APP.GOOGLE_MAPS, function(isAvailable){
       var app;
       if(isAvailable){
@@ -79,7 +79,7 @@ angular.module('starter.controllers', [])
         console.warn("Google Maps not available - falling back to user selection");
         app = launchnavigator.APP.USER_SELECT;
       }
-      launchnavigator.navigate("London, UK", {
+      launchnavigator.navigate(locality+", "+city, {
         app: app
       });
     });

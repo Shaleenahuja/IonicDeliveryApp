@@ -1,3 +1,4 @@
+var url = 'http://192.168.0.114:5000/';
 angular.module('starter.services', [])
 
 .factory('orderService', function() {
@@ -22,7 +23,7 @@ angular.module('starter.services', [])
 })
   .factory('loginService', function($http) {
     // Might use a resource here that returns a JSON array
-    var login_url = 'http://192.168.0.114:5000/test/v1/login/';
+    var login_url = url+'test/v1/login/';
     return {
       login: function(data) {
         return $http.post(login_url, data);
@@ -36,7 +37,7 @@ angular.module('starter.services', [])
     if (storeService.get('user')){
       user = storeService.get('user');
       $rootScope['authentication-token'] = user.authentication_token;
-      $http.get('http://192.168.0.114:5000/test/v1/orders/').then(function (response) {
+      $http.get(url+'test/v1/orders/').then(function (response) {
         orderService.setOrders(response.data.data);
         $state.go('orders');
       });
