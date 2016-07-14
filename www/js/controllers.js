@@ -21,7 +21,7 @@ angular.module('starter.controllers', [])
   }
 })
 
-.controller('OrdersCtrl', function($scope,$http, $ionicPopup, $timeout, $state, orderService, userService) {
+.controller('OrdersCtrl', function($scope,$http, $ionicPopup, $timeout, $state, orderService, userService, $interval) {
 
   $scope.$on('get:orders', function(){
     $scope.delivery = $scope.getOrders();
@@ -34,13 +34,31 @@ angular.module('starter.controllers', [])
     $scope.delivery = orderService.getOrders();
     console.log($scope.delivery);
   };
+  $scope.getNewOrders = function () {
+    $http.get(url+'test/v1/orders/').then(function(response){
+      console.log(response);
+      if (response.data.data.length){
+        if($scope.delivery.length){
+          var previousOrderId = $scope.delivery[0].id;
+        }
+        $scope.delivery = response.data.data;
+        console.log($scope.delivery);
+
+        if (previousOrderId && previousOrderId != $scope.delivery[0].id){
+          alert('New Order Arrived.');
+        }
+
+      }
+    })
+  };
   $scope.getOrders();
+  $interval($scope.getNewOrders, 1000);
   $scope.showPopup = function (order) {
     $scope.data = {};
 
     // An elaborate, custom popup
     var myPopup = $ionicPopup.show({
-      template: '<input type="text" ng-model="data.otp">',
+      template: '<input type="number" min="1000" max="9999" ng-model="data.otp">',
       title: 'Delivery Status',
       subTitle: 'Enter the Otp.',
       scope: $scope,
@@ -54,6 +72,7 @@ angular.module('starter.controllers', [])
               //don't allow the user to close unless he enters wifi password
               e.preventDefault();
             } else {
+              console.log($scope.data);
               return $http.put(url+"test/v1/order/"+order.id+'/',$scope.data)
             }
           }
@@ -62,7 +81,7 @@ angular.module('starter.controllers', [])
     });
 
     myPopup.then(function(res){
-      order = res.data.data;
+      order.status = "delivered";
     });
 
     $timeout(function() {
