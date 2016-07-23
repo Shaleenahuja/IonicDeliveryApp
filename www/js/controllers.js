@@ -1,4 +1,4 @@
-var url = 'http://192.168.0.214:5000/';
+var url = 'http://127.0.0.1:5000/';
 angular.module('starter.controllers', [])
 
 .controller('TabCtrl', function ($scope, userService) {
@@ -52,7 +52,7 @@ angular.module('starter.controllers', [])
     })
   };
   $scope.getOrders();
-  $interval($scope.getNewOrders, 1000);
+  $interval($scope.getNewOrders, 300000);
   $scope.showPopup = function (order) {
     $scope.data = {};
 
@@ -65,7 +65,7 @@ angular.module('starter.controllers', [])
       buttons: [
         { text: 'Cancel' },
         {
-          text: '<b>Save</b>',
+          text: '<b>Check</b>',
           type: 'button-positive',
           onTap: function(e) {
             if (!$scope.data) {
@@ -82,6 +82,42 @@ angular.module('starter.controllers', [])
 
     myPopup.then(function(res){
       order.status = "delivered";
+    });
+
+    $timeout(function() {
+      myPopup.close(); //close the popup after 3 seconds for some reason
+    }, 30000);
+  };
+
+  $scope.recieverInfo = function () {
+    $scope.data = {};
+
+    // An elaborate, custom popup
+    var myPopup = $ionicPopup.show({
+      template: '<input type="text" placeholder="Reiever Name" ng-model="data.name">' +
+      '<input type="number" placeholder="number" ng-model="data.number">',
+      title: 'Reciever Info',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: '<b>Save</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.data) {
+              //don't allow the user to close unless he enters wifi password
+              e.preventDefault();
+            } else {
+              console.log($scope.data);
+              //return $http.put(url+"test/v1/order/"+order.id+'/',$scope.data)
+            }
+          }
+        }
+      ]
+    });
+
+    myPopup.then(function(res){
+
     });
 
     $timeout(function() {
