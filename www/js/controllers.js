@@ -28,7 +28,7 @@ angular.module('starter.controllers', [])
     console.log('sdsd', $scope.delivery)
   });
   $scope.delivery = orderService.getOrders();
-
+  $scope.paymentMode = [{id:0,value:'cash'},{id:1,value:'credit'}]
   $scope.getOrders = function(){
     console.log('jhgvhjvbkjhvbjkbvlj');
     $scope.delivery = orderService.getOrders();
@@ -53,7 +53,7 @@ angular.module('starter.controllers', [])
   };
   $scope.getOrders();
   $interval($scope.getNewOrders, 300000);
-  $scope.showPopup = function (order) {
+  $scope.markDeliver = function (order) {
     $scope.data = {};
 
     // An elaborate, custom popup
@@ -71,6 +71,7 @@ angular.module('starter.controllers', [])
             if (!$scope.data) {
               //don't allow the user to close unless he enters wifi password
               e.preventDefault();
+              return false;
             } else {
               console.log($scope.data);
               return $http.put(url+"test/v1/order/"+order.id+'/',$scope.data)
@@ -81,7 +82,9 @@ angular.module('starter.controllers', [])
     });
 
     myPopup.then(function(res){
-      order.status = "delivered";
+      if(res){
+        order.status = "delivered";
+      }
     });
 
     $timeout(function() {
@@ -89,13 +92,15 @@ angular.module('starter.controllers', [])
     }, 30000);
   };
 
-  $scope.recieverInfo = function () {
+  $scope.recieverInfo = function (order) {
     $scope.data = {};
 
     // An elaborate, custom popup
     var myPopup = $ionicPopup.show({
-      template: '<input type="text" placeholder="Reiever Name" ng-model="data.name">' +
-      '<input type="number" placeholder="number" ng-model="data.number">',
+      template: '<input type="text" placeholder="Reiever Name" ng-model="data.customer_name">' +
+      '<input type="number" placeholder="number" ng-model="data.customer_number"> ' +
+      '<h4>Payment Mode</h4>' +
+      '<select class="col col50" ng-model="data.payment_mode" ng-options="payment.id as payment.value for payment in paymentMode"></select>',
       title: 'Reciever Info',
       scope: $scope,
       buttons: [
@@ -105,11 +110,10 @@ angular.module('starter.controllers', [])
           type: 'button-positive',
           onTap: function(e) {
             if (!$scope.data) {
-              //don't allow the user to close unless he enters wifi password
               e.preventDefault();
             } else {
               console.log($scope.data);
-              //return $http.put(url+"test/v1/order/"+order.id+'/',$scope.data)
+              return $http.put(url+"test/v1/order/"+order.id+'/',$scope.data)
             }
           }
         }
@@ -143,6 +147,17 @@ angular.module('starter.controllers', [])
   $scope.getDetails= function (data) {
     orderService.set(data);
     $state.go('orders-address');
+  }
+
+  $scope.cancelOrder = function(order){
+    console.log(order.id);
+    $scope.data = {status:'cancel'};
+    order.status = 'cancel';
+    $http.put(url+"test/v1/order/"+order.id+'/', $scope.data).then( function (response) {
+      console.log(response.data.data);
+      order.status = response.data.data.status;
+    })
+
   }
 
 
